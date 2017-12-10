@@ -19,11 +19,13 @@ body > * {
 
 main {
 	overflow: auto;
+	resize: vertical;
+	height: 200px;
 }
 
-iframe {
+iframe[name="rtk"] {
 	border: none;
-	flex: 1 0 70%;
+	flex-grow: 1;
 }
 
 h1, p {

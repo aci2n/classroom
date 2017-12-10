@@ -10,9 +10,7 @@
 	function addRtkLinks(text) {		
 		let html = "";
 		
-		for (let i = 0; i < text.length; i++) {
-			const character = text[i];
-			
+		for (const character of text) {		
 			if (isKanji(character)) {
 				html += `<a href="https://hochanh.github.io/rtk/${character}" target="rtk">${character}</a>`;
 			} else {
@@ -22,11 +20,25 @@
 		
 		return html;
 	}
+	
+	function cleanText(text) {
+		const removables = [
+			"\u3000", // weird line breaks
+			/[\w\\]+\.ogg/g // voice file paths
+		];
+		
+		for (const removable of removables) {
+			text = text.replace(removable, "");
+		}
+		
+		return text;
+	}
 
 	function processNode(node) {
 		let anchor = null;
 
-		node.innerHTML = addRtkLinks(node.textContent);
+		node.innerHTML = addRtkLinks(cleanText(node.textContent));
+		
 		anchor = node.querySelector("a:last-child");
 		
 		if (anchor) {
