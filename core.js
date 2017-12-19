@@ -22,13 +22,13 @@
 	}
 	
 	function cleanText(text) {
-		const removables = [
-			"\u3000", // weird line breaks
-			/[\w\\]+\.ogg/g // voice file paths
+		const filters = [
+			{exp: /\u3000/g, rep: ""},  // weird line breaks
+			{exp: /】[^「]+「/g, rep: "】「"} // file paths
 		];
 		
-		for (const removable of removables) {
-			text = text.replace(removable, "");
+		for (const filter of filters) {
+			text = text.replace(filter.exp, filter.rep);
 		}
 		
 		return text;
