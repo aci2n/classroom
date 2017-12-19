@@ -1,24 +1,11 @@
 (function() {
 	'use strict';
 		
-	function isKanji(character) {	
-		const codePoint = character.codePointAt(0);
-		
-		return codePoint >= 0x4e00 && codePoint <= 0x9faf;
-	}
-
 	function addRtkLinks(text) {		
-		let html = "";
+		const exp = /([\u4e00-\u9faf])/g;
+		const replacement = "<a href=\"https://hochanh.github.io/rtk/$1\" target=\"rtk\">$1</a>";
 		
-		for (const character of text) {		
-			if (isKanji(character)) {
-				html += `<a href="https://hochanh.github.io/rtk/${character}" target="rtk">${character}</a>`;
-			} else {
-				html += character;
-			}
-		}
-		
-		return html;
+		return text.replace(exp, replacement);
 	}
 	
 	function cleanText(text) {
