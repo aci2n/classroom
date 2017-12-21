@@ -3,9 +3,9 @@
 		
 	function addRtkLinks(text) {		
 		const exp = /([\u4e00-\u9faf])/g;
-		const replacement = "<a href=\"https://hochanh.github.io/rtk/$1\" target=\"rtk\">$1</a>";
+		const rep = "<a href='https://hochanh.github.io/rtk/$1' target='rtk'>$1</a>";
 		
-		return text.replace(exp, replacement);
+		return text.replace(exp, rep);
 	}
 	
 	function cleanText(text) {
@@ -25,7 +25,6 @@
 		let anchor = null;
 
 		node.innerHTML = addRtkLinks(cleanText(node.textContent));
-		
 		anchor = node.querySelector("a:last-child");
 		
 		if (anchor) {
