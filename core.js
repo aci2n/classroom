@@ -24,6 +24,7 @@
 	function processNode(node) {
 		let anchor = null;
 
+		node.title = node.parentNode.childNodes.length;
 		node.innerHTML = addRtkLinks(cleanText(node.textContent));
 		anchor = node.querySelector("a:last-child");
 		
