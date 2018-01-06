@@ -20,12 +20,17 @@
 		
 		return text;
 	}
+	
+	function nodeTitle(node) {
+		return node.parentNode.childNodes.length + " - " + new Date().toLocaleString();
+	}
 
 	function processNode(node) {
 		let anchor = null;
 
-		node.title = node.parentNode.childNodes.length;
+		node.title = nodeTitle(node);
 		node.innerHTML = addRtkLinks(cleanText(node.textContent));
+		node.innerHTML += "\n";
 		anchor = node.querySelector("a:last-child");
 		
 		if (anchor) {
