@@ -29,8 +29,7 @@
 		let anchor = null;
 
 		node.title = nodeTitle(node);
-		node.innerHTML = addRtkLinks(cleanText(node.textContent));
-		node.innerHTML += "\n";
+		node.innerHTML = addRtkLinks(cleanText(node.textContent)) + "\n";
 		anchor = node.querySelector("a:last-child");
 		
 		if (anchor) {
