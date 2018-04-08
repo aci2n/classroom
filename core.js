@@ -47,11 +47,21 @@
 		records.forEach(processRecord);
 		target.scrollTop = target.scrollTopMax;
 	}
+    
+    function clearContent(element) {
+        element.innerHTML = "";
+    }
 	
 	function onLoad(event) {
-		new MutationObserver(onMutation).observe(document.querySelector("main"), {
+        const main = document.querySelector("main");
+        
+		new MutationObserver(onMutation).observe(main, {
 			childList: true
 		});
+        
+        document.querySelector("h1 img").addEventListener("click", function() {
+            clearContent(main);
+        });
 	}
 	
 	document.addEventListener("DOMContentLoaded", onLoad);
