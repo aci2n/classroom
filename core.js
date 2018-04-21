@@ -1,11 +1,39 @@
 (function() {
 	'use strict';
-		
-	function addRtkLinks(text) {		
-		const exp = /([\u4e00-\u9faf])/g;
-		const rep = "<a href='https://hochanh.github.io/rtk/$1' target='rtk'>$1</a>";
-		
-		return text.replace(exp, rep);
+    
+    const DEFAULT_SOURCE = "https://hochanh.github.io/rtk/";
+    const FALLBACK_SOURCE = "https://kanji.koohii.com/study/kanji/";
+	
+    function customizeLinks(links, frame) {
+        function handler(event) {
+            event.preventDefault();
+            frame.src = event.target.href;
+        }
+        
+        for (let link of links) {
+            link.addEventListener("click", handler);
+        }
+        
+        if (links.length > 0) {
+            links[links.length - 1].click();
+        }
+    }
+    
+    function maybeUseFallbackSource(event) {
+        const frame = event.target;
+        const src = frame.src;
+        
+        if (src.startsWith(DEFAULT_SOURCE)) {     
+            fetch(src).then(response => {
+                if (response.status !== 200) {
+                    frame.src = src.replace(DEFAULT_SOURCE, FALLBACK_SOURCE);
+                }
+            }); 
+        }
+    }
+    
+    function addRtkLinks(text) {		
+		return text.replace(/([\u4e00-\u9faf])/g, `<a href='${DEFAULT_SOURCE}$1' target='rtk'>$1</a>`);
 	}
 	
 	function cleanText(text) {
@@ -20,48 +48,27 @@
 		
 		return text;
 	}
-	
-	function nodeTitle(node) {
-		return node.parentNode.childNodes.length + " - " + new Date().toLocaleString();
-	}
-
-	function processNode(node) {
-		let anchor = null;
-
-		node.title = nodeTitle(node);
-		node.innerHTML = addRtkLinks(cleanText(node.textContent)) + "\n";
-		anchor = node.querySelector("a:last-child");
-		
-		if (anchor) {
-			document.querySelector("iframe[name='rtk']").src = anchor.href;
-		}
-	}
-	
-	function processRecord(record) {
-		record.addedNodes.forEach(processNode);
-	}
-	
-	function onMutation(records) {
+    
+	function onMutation(records, frame) {
 		const target = records[0].target;
 		
-		records.forEach(processRecord);
+		records.forEach(record => record.addedNodes.forEach(node => {
+            node.title = node.parentNode.childNodes.length + " - " + new Date().toLocaleString();
+            node.innerHTML = addRtkLinks(cleanText(node.textContent)) + "\n";
+            customizeLinks(node.querySelectorAll("a"), frame);
+        }));
 		target.scrollTop = target.scrollTopMax;
 	}
     
-    function clearContent(element) {
-        element.innerHTML = "";
-    }
 	
 	function onLoad(event) {
         const main = document.querySelector("main");
-        
-		new MutationObserver(onMutation).observe(main, {
-			childList: true
-		});
-        
-        document.querySelector("h1 img").addEventListener("click", function() {
-            clearContent(main);
-        });
+        const frame = document.querySelector("iframe[name='rtk']");
+
+		new MutationObserver(records => onMutation(records, frame)).observe(main, {childList: true});
+        document.querySelector("h1 img").addEventListener("click", event => main.innerHTML = "");
+        frame.addEventListener("load", maybeUseFallbackSource);
+        frame.src = DEFAULT_SOURCE;
 	}
 	
 	document.addEventListener("DOMContentLoaded", onLoad);
