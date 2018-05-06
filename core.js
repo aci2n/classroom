@@ -33,7 +33,7 @@
     }
     
     function addRtkLinks(text) {		
-		return text.replace(/([\u4e00-\u9faf])/g, `<a href='${DEFAULT_SOURCE}$1' target='rtk'>$1</a>`);
+		return text.replace(/([\u4e00-\u9faf])/g, `<a href='${DEFAULT_SOURCE}$1'>$1</a>`);
 	}
 	
 	function cleanText(text) {
@@ -53,7 +53,7 @@
 		const target = records[0].target;
 		
 		records.forEach(record => record.addedNodes.forEach(node => {
-            node.title = node.parentNode.childNodes.length + " - " + new Date().toLocaleString();
+            node.title = node.parentNode.childNodes.length + " - " + new Date().toTimeString();
             node.innerHTML = addRtkLinks(cleanText(node.textContent)) + "\n";
             customizeLinks(node.querySelectorAll("a"), frame);
         }));
@@ -62,11 +62,11 @@
     
 	
 	function onLoad(event) {
-        const main = document.querySelector("main");
-        const frame = document.querySelector("iframe[name='rtk']");
+        const main = document.querySelector("#insert-target");
+        const frame = document.querySelector("#kanji-info");
 
 		new MutationObserver(records => onMutation(records, frame)).observe(main, {childList: true});
-        document.querySelector("h1 img").addEventListener("click", event => main.innerHTML = "");
+        document.querySelector("#clear").addEventListener("click", event => main.innerHTML = "");
         frame.addEventListener("load", maybeUseFallbackSource);
         frame.src = DEFAULT_SOURCE;
 	}
