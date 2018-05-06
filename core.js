@@ -1,9 +1,6 @@
 (function() {
 	'use strict';
     
-    const DEFAULT_SOURCE = "https://hochanh.github.io/rtk/";
-    const FALLBACK_SOURCE = "https://kanji.koohii.com/study/kanji/";
-	
     function customizeLinks(links, frame) {
         function handler(event) {
             event.preventDefault();
@@ -23,17 +20,17 @@
         const frame = event.target;
         const src = frame.src;
         
-        if (src.startsWith(DEFAULT_SOURCE)) {     
+        if (src.startsWith(config.defaultSource)) {     
             fetch(src).then(response => {
                 if (response.status !== 200) {
-                    frame.src = src.replace(DEFAULT_SOURCE, FALLBACK_SOURCE);
+                    frame.src = src.replace(config.defaultSource, config.fallbackSource);
                 }
             }); 
         }
     }
     
     function addRtkLinks(text) {		
-		return text.replace(/([\u4e00-\u9faf])/g, `<a href='${DEFAULT_SOURCE}$1'>$1</a>`);
+		return text.replace(/([\u4e00-\u9faf])/g, `<a href='${config.defaultSource}$1'>$1</a>`);
 	}
 	
 	function cleanText(text) {
@@ -60,6 +57,15 @@
 		target.scrollTop = target.scrollTopMax;
 	}
     
+    function setupBackground(img) {      
+        img.onerror = event => img.remove();
+        
+        if (config.backgroundCount > 0) {
+            img.src = "img/" + (Math.floor(Math.random() * config.backgroundCount) + 1) + ".png";
+        } else {
+            img.onerror();
+        }
+    }
 	
 	function onLoad(event) {
         const main = document.querySelector("#insert-target");
@@ -68,7 +74,8 @@
 		new MutationObserver(records => onMutation(records, frame)).observe(main, {childList: true});
         document.querySelector("#clear").addEventListener("click", event => main.innerHTML = "");
         frame.addEventListener("load", maybeUseFallbackSource);
-        frame.src = DEFAULT_SOURCE;
+        frame.src = config.defaultSource;
+        setupBackground(document.querySelector("#background"));
 	}
 	
 	document.addEventListener("DOMContentLoaded", onLoad);
