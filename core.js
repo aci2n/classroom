@@ -57,14 +57,14 @@
 		target.scrollTop = target.scrollTopMax;
 	}
     
-    function setupBackground(img) {      
-        img.onerror = event => img.remove();
-        
-        if (config.backgroundCount > 0) {
-            img.src = "img/" + (Math.floor(Math.random() * config.backgroundCount) + 1) + ".png";
-        } else {
-            img.onerror();
+    function setupBackground(img, tries) {
+        if (!(config.backgroundCount > 0) || tries === 0) {
+            img.remove();
+            return;
         }
+        
+        img.onerror = event => setupBackground(img, tries - 1);
+        img.src = "img/" + (Math.floor(Math.random() * config.backgroundCount) + 1) + ".png";
     }
 	
 	function onLoad(event) {
@@ -75,7 +75,7 @@
         document.querySelector("#clear").addEventListener("click", event => main.innerHTML = "");
         frame.addEventListener("load", maybeUseFallbackSource);
         frame.src = config.defaultSource;
-        setupBackground(document.querySelector("#background"));
+        setupBackground(document.querySelector("#background"), 3);
 	}
 	
 	document.addEventListener("DOMContentLoaded", onLoad);

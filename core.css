@@ -69,7 +69,7 @@ body > * {
 
 #background {
     position: fixed;
-    right: 0;
+    align-self: right;
     height: 400px;
     z-index: -1;
     opacity: 0.2;
