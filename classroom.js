@@ -74,18 +74,18 @@
 		kanjiInfo.src = defaultSource;
 	}
     
-	function initBackground(background, count, tries = 3) {     
+	function initBackground(background, count, template, tries = 3) {     
 		if (count > 0 && tries > 0) {
-			background.onerror = () => initBackground(background, tries - 1);
-			background.src = "img/" + (Math.floor(Math.random() * count) + 1) + ".png";
+			background.onerror = () => initBackground(background, count, template, tries - 1);
+			background.src = template(Math.floor(Math.random() * count) + 1);
 		} else {
 			background.remove();
 		}
 	}
     
-	function initKeybinds(background, backgroundCount) {
+	function initKeybinds(background, backgroundCount, backgroundTemplate) {
 		const handlers = {
-			r: () => initBackground(background, backgroundCount)
+			r: () => initBackground(background, backgroundCount, backgroundTemplate)
 		};
 
 		document.addEventListener("keydown", event => {
@@ -105,8 +105,8 @@
 		initInsertTargetObserver(dom.insertTarget, dom.kanjiInfo, config.defaultSource);
 		initClearButton(dom.clear, dom.insertTarget);
 		initKanjiInfo(dom.kanjiInfo, config.defaultSource, config.fallbackSource);
-		initBackground(dom.background, config.backgroundCount);
-		initKeybinds(dom.background, config.backgroundCount);
+		initBackground(dom.background, config.backgroundCount, config.backgroundTemplate);
+		initKeybinds(dom.background, config.backgroundCount, config.backgroundTemplate);
 		initTitle(dom.title, config.title);
 	}
 

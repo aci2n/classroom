@@ -20,6 +20,9 @@
 		return Object.assign({
 			title: "i2nの教室",
 			backgroundCount: 0,
+			backgroundTemplate: index => {
+				return `img/${index}.png`;
+			},
 			defaultSource: "https://hochanh.github.io/rtk/",
 			fallbackSource: "https://kanji.koohii.com/study/kanji/"
 		}, window.classroomConfig);
