@@ -70,7 +70,10 @@
 	}
     
 	function initKanjiInfo(kanjiInfo, defaultSource, fallbackSource) {
-		kanjiInfo.addEventListener("load", () => maybeUseFallbackSource(kanjiInfo, defaultSource, fallbackSource));
+		if (fallbackSource) {
+			kanjiInfo.addEventListener("load", () => maybeUseFallbackSource(kanjiInfo, defaultSource, fallbackSource));
+		}
+		
 		kanjiInfo.src = defaultSource;
 	}
     
