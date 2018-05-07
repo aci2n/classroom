@@ -1,10 +1,10 @@
 (function() {
 	'use strict';
     
-    function customizeLinks(links, frame) {
+    function customizeLinks(links, kanjiInfo) {
         function handler(event) {
             event.preventDefault();
-            frame.src = event.target.href;
+            kanjiInfo.src = event.target.href;
         }
         
         for (let link of links) {
@@ -16,21 +16,20 @@
         }
     }
     
-    function maybeUseFallbackSource(event) {
-        const frame = event.target;
-        const src = frame.src;
+    function maybeUseFallbackSource(kanjiInfo, defaultSource, fallbackSource) {
+        const src = kanjiInfo.src;
         
-        if (src.startsWith(config.defaultSource)) {     
+        if (src.startsWith(defaultSource)) {     
             fetch(src).then(response => {
                 if (response.status !== 200) {
-                    frame.src = src.replace(config.defaultSource, config.fallbackSource);
+                    kanjiInfo.src = src.replace(defaultSource, fallbackSource);
                 }
             }); 
         }
     }
     
-    function addRtkLinks(text) {		
-		return text.replace(/([\u4e00-\u9faf])/g, `<a href='${config.defaultSource}$1'>$1</a>`);
+    function addRtkLinks(text, defaultSource) {		
+		return text.replace(/([\u4e00-\u9faf])/g, `<a href='${defaultSource}$1'>$1</a>`);
 	}
 	
 	function cleanText(text) {
@@ -46,37 +45,79 @@
 		return text;
 	}
     
-	function onMutation(records, frame) {
+	function onMutation(records, kanjiInfo, defaultSource) {
 		const target = records[0].target;
 		
 		records.forEach(record => record.addedNodes.forEach(node => {
             node.title = node.parentNode.childNodes.length + " - " + new Date().toTimeString();
-            node.innerHTML = addRtkLinks(cleanText(node.textContent)) + "\n";
-            customizeLinks(node.querySelectorAll("a"), frame);
+            node.innerHTML = addRtkLinks(cleanText(node.textContent), defaultSource) + "\n";
+            customizeLinks(node.querySelectorAll("a"), kanjiInfo);
         }));
 		target.scrollTop = target.scrollTopMax;
 	}
     
-    function setupBackground(img, tries) {
-        if (!(config.backgroundCount > 0) || tries === 0) {
-            img.remove();
-            return;
-        }
-        
-        img.onerror = event => setupBackground(img, tries - 1);
-        img.src = "img/" + (Math.floor(Math.random() * config.backgroundCount) + 1) + ".png";
+    function clearElement(element) {
+        element.innerHTML = "";
     }
-	
-	function onLoad(event) {
-        const main = document.querySelector("#insert-target");
-        const frame = document.querySelector("#kanji-info");
+    
+    function setupMutationObserver(insertTarget, kanjiInfo, defaultSource) {
+        new MutationObserver(mutation => onMutation(mutation, kanjiInfo, defaultSource))
+            .observe(insertTarget, {childList: true});
+    }
+    
+    function setupClearButton(clear, insertTarget) {
+        clear.addEventListener("click", () => clearElement(insertTarget));
+    }
+    
+    function setupKanjiInfo(kanjiInfo, defaultSource, fallbackSource) {
+        kanjiInfo.addEventListener("load", () => maybeUseFallbackSource(kanjiInfo, defaultSource, fallbackSource));
+        kanjiInfo.src = defaultSource;
+    }
+    
+    function setupBackground(background, count, tries = 3) {     
+        if (count > 0 && tries > 0) {
+            background.onerror = () => setupBackground(background, tries - 1);
+            background.src = "img/" + (Math.floor(Math.random() * count) + 1) + ".png";
+        } else {
+            background.remove();
+        }
+    }
+    
+    function setupKeybinds(background, backgroundCount) {
+        const handlers = {
+            r: () => setupBackground(background, backgroundCount)
+        };
 
-		new MutationObserver(records => onMutation(records, frame)).observe(main, {childList: true});
-        document.querySelector("#clear").addEventListener("click", event => main.innerHTML = "");
-        frame.addEventListener("load", maybeUseFallbackSource);
-        frame.src = config.defaultSource;
-        setupBackground(document.querySelector("#background"), 3);
-	}
-	
-	document.addEventListener("DOMContentLoaded", onLoad);
+        document.addEventListener("keydown", event => {
+            const key = event.key.toLowerCase();
+            
+            if (handlers[key]) {
+                handlers[key](event);
+            }
+        });
+    }
+
+    function getDom() {
+        const selectors = {
+            background: "#background",
+            kanjiInfo: "#kanji-info",
+            insertTarget: "#insert-target",
+            clear: "#clear"
+        };
+            
+        return Object.keys(selectors).reduce((map, key) => {
+            map[key] = document.querySelector(selectors[key]);
+            return map;
+        }, {});
+    }
+
+	document.addEventListener("DOMContentLoaded", () => {
+        const dom = getDom();
+        
+		setupMutationObserver(dom.insertTarget, dom.kanjiInfo, config.defaultSource);
+        setupClearButton(dom.clear, dom.insertTarget);
+        setupKanjiInfo(dom.kanjiInfo, config.defaultSource, config.fallbackSource);
+        setupBackground(dom.background, config.backgroundCount);
+        setupKeybinds(dom.background, config.backgroundCount);
+	});
 }());
