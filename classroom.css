@@ -69,7 +69,7 @@ h1 {
 
 #background {
     position: fixed;
-    align-self: right;
+    align-self: flex-end;
     height: 400px;
     z-index: -1;
     opacity: 0.2;
