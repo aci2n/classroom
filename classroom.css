@@ -31,7 +31,7 @@ h1 {
 	overflow: auto;
 	resize: vertical;
 	height: 200px;
-    font-size: 16px;
+    font-size: 24px;
 }
 
 #insert-target p {
@@ -72,5 +72,10 @@ h1 {
     align-self: flex-end;
     height: 400px;
     z-index: -1;
-    opacity: 0.2;
+    opacity: 0.1;
+}
+
+#manual-insert {
+	resize: vertical;
+	height: 1em;
 }

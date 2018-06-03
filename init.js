@@ -7,7 +7,8 @@
 			kanjiInfo: "#kanji-info",
 			insertTarget: "#insert-target",
 			clear: "#clear",
-			title: "#title"
+			title: "#title",
+			manualInsert: "#manual-insert"
 		};
             
 		return Object.keys(selectors).reduce((map, key) => {

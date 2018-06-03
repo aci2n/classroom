@@ -103,6 +103,23 @@
 	function initTitle(element, text) {
 		element.textContent = text;
 	}
+
+	function initManualInsert(textarea, insertTarget) {
+		textarea.addEventListener("input", () => {
+			const value = textarea.value;
+			const last = value.length - 1;
+
+			if (value[last] === "\n") {
+				textarea.value = "";
+
+				if (value.length > 1)  {
+					const node = document.createElement("p");
+					node.textContent = value.substring(0, last);
+					insertTarget.appendChild(node);
+				}
+			}
+		});
+	}
     
 	function initClassroom(dom, config) {
 		initInsertTargetObserver(dom.insertTarget, dom.kanjiInfo, config.defaultSource);
@@ -111,6 +128,7 @@
 		initBackground(dom.background, config.backgroundCount, config.backgroundTemplate);
 		initKeybinds(dom.background, config.backgroundCount, config.backgroundTemplate);
 		initTitle(dom.title, config.title);
+		initManualInsert(dom.manualInsert, dom.insertTarget);
 	}
 
 	window.classroom = initClassroom;
