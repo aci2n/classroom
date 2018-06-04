@@ -88,7 +88,11 @@
     
 	function initKeybinds(background, backgroundCount, backgroundTemplate) {
 		const handlers = {
-			r: () => initBackground(background, backgroundCount, backgroundTemplate)
+			r: event => {
+				if (event.target === document.body) {
+					initBackground(background, backgroundCount, backgroundTemplate);
+				}
+			}
 		};
 
 		document.addEventListener("keydown", event => {
