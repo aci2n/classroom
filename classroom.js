@@ -45,6 +45,23 @@
 		return text;
 	}
 
+	function pad(value) {
+		value = value.toString();
+
+		if (value.length === 1) {
+			value = "0" + value;
+		}
+
+		return value;
+	}
+
+	function formatMinutes(value) {
+		const mins = Math.floor(value);
+		const secs = Math.floor((value - mins) * 60);
+
+		return `${pad(mins)}:${pad(secs)}`;
+	}
+
 	function updateStats(stats, insertTarget) {
 		const nodes = insertTarget.childNodes.length;
 		let mins = 0;
@@ -62,7 +79,7 @@
 			}
 		}
 
-		const data = { "🕓": mins.toFixed(2), "💬": cpm.toFixed(2) };
+		const data = { "🕓": formatMinutes(mins), "💬": cpm.toFixed(2) };
 
 		stats.innerHTML = Object.keys(data).reduce((accum, key) => {
 			return accum + `<dd>${key}</dd><dt>${data[key]}</dt>`;
