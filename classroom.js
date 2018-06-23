@@ -1,6 +1,6 @@
 (function(window) {
 	"use strict";
-    
+   
 	function customizeLinks(links, kanjiInfo) {
 		function handler(event) {
 			event.preventDefault();
@@ -44,15 +44,40 @@
 		
 		return text;
 	}
+
+	function updateStats(stats, insertTarget) {
+		const nodes = insertTarget.childNodes.length;
+		let mins = 0;
+		let cpm = 0;
+
+		if (nodes > 0) {
+			if (nodes === 1) {
+				stats.dataset.startTime = Date.now();
+			}
+
+			mins = (Date.now() - stats.dataset.startTime) / 1000 / 60;
+
+			if (mins > 0) {
+				cpm = insertTarget.textContent.replace(/[^「」『』|！？ー―-。….、,\s\n]/g, "").length / mins;
+			}
+		}
+
+		const data = { "🕓": mins.toFixed(2), "💬": cpm.toFixed(2) };
+
+		stats.innerHTML = Object.keys(data).reduce((accum, key) => {
+			return accum + `<dd>${key}</dd><dt>${data[key]}</dt>`;
+		}, "");
+	}
     
-	function onMutation(records, kanjiInfo, defaultSource) {
+	function onMutation(records, kanjiInfo, insertTarget, stats, defaultSource) {
 		const target = records[0].target;
 		
 		records.forEach(record => record.addedNodes.forEach(node => {
-			node.title = node.parentNode.childNodes.length + " - " + new Date().toTimeString();
+			node.title = insertTarget.childNodes.length;
 			node.innerHTML = addRtkLinks(cleanText(node.textContent), defaultSource) + "\n";
 			customizeLinks(node.querySelectorAll("a"), kanjiInfo);
 		}));
+		updateStats(stats, insertTarget);
 		target.scrollTop = target.scrollTopMax;
 	}
     
@@ -60,8 +85,8 @@
 		element.innerHTML = "";
 	}
     
-	function initInsertTargetObserver(insertTarget, kanjiInfo, defaultSource) {
-		new MutationObserver(mutation => onMutation(mutation, kanjiInfo, defaultSource))
+	function initInsertTargetObserver(insertTarget, kanjiInfo, stats, defaultSource) {
+		new MutationObserver(mutation => onMutation(mutation, kanjiInfo, insertTarget, stats, defaultSource))
 			.observe(insertTarget, {childList: true});
 	}
     
@@ -126,13 +151,14 @@
 	}
     
 	function initClassroom(dom, config) {
-		initInsertTargetObserver(dom.insertTarget, dom.kanjiInfo, config.defaultSource);
+		initInsertTargetObserver(dom.insertTarget, dom.kanjiInfo, dom.stats, config.defaultSource);
 		initClearButton(dom.clear, dom.insertTarget);
 		initKanjiInfo(dom.kanjiInfo, config.defaultSource, config.fallbackSource);
 		initBackground(dom.background, config.backgroundCount, config.backgroundTemplate);
 		initKeybinds(dom.background, config.backgroundCount, config.backgroundTemplate);
 		initTitle(dom.title, config.title);
 		initManualInsert(dom.manualInsert, dom.insertTarget);
+		updateStats(dom.stats, dom.insertTarget);
 	}
 
 	window.classroom = initClassroom;

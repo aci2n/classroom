@@ -11,12 +11,19 @@ body {
 	padding: 5px 2.5%;
 	background: #2c3e50;
 	box-sizing: border-box;
-	font-family: Meiryo;
+	font-family: メイリオ;
     color: #ecf0f1;
 }
 
 body > * {
 	margin: 5px;
+}
+
+header {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: relative;
 }
 
 h1 {
@@ -25,6 +32,25 @@ h1 {
     margin: 0;
     display: inline;
     font-weight: normal;
+}
+
+#stats {
+	margin: 0;
+	border: 1px solid #34495e;
+	padding: 3px;
+	margin: 0px -3px;
+	position: absolute;
+	left: 0;
+}
+
+#stats dd {
+	font-weight: bold;
+}
+
+#stats dd,
+#stats dt {
+	display: inline;
+	margin: 0px 1.5px;
 }
 
 #insert-target {
@@ -76,6 +102,6 @@ h1 {
 }
 
 #manual-insert {
-	resize: vertical;
-	height: 1em;
+	resize: none;
+	height: 1.5em;
 }
