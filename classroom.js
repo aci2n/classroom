@@ -75,7 +75,7 @@
 			mins = (Date.now() - stats.dataset.startTime) / 1000 / 60;
 
 			if (mins > 0) {
-				cpm = insertTarget.textContent.replace(/[^「」『』|！？ー―-。….、,\s\n]/g, "").length / mins;
+				cpm = insertTarget.textContent.length / mins;
 			}
 		}
 
