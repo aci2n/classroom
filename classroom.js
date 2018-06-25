@@ -150,6 +150,14 @@
 		element.textContent = text;
 	}
 
+	function mouseOverElement(element) {
+		const html = element.innerHTML;
+		element.innerHTML = `<span>${html}</span>`;
+		const rect = element.firstChild.getBoundingClientRect();
+		element.innerHTML = html;
+		dispatchEvent(new MouseEvent("mousemove", { clientX: rect.left, clientY: rect.top, shiftKey: true }));
+	}
+
 	function initManualInsert(textarea, insertTarget) {
 		textarea.addEventListener("input", () => {
 			const value = textarea.value;
@@ -162,6 +170,7 @@
 					const node = document.createElement("p");
 					node.textContent = value.substring(0, last);
 					insertTarget.appendChild(node);
+					mouseOverElement(node);
 				}
 			}
 		});
