@@ -104,3 +104,24 @@ h1 {
 	resize: none;
 	height: 1.5em;
 }
+
+#timer {
+	position: absolute;
+	right: 0;
+	cursor: default;
+	opacity: 0.5;
+	padding: 5px;
+}
+
+#timer iframe {
+	display: none;
+}
+
+#timer:hover iframe {
+	display: block;
+	position: absolute;
+	top: 50%;
+	right: 50%;
+	width: 500px;
+	height: 400px;
+}
