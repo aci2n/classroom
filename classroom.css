@@ -42,6 +42,10 @@ h1 {
 	left: 0;
 }
 
+#stats:not(:hover) {
+	opacity: 0;
+}
+
 #stats dd {
 	font-weight: bold;
 }
