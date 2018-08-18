@@ -64,6 +64,7 @@
 
 	function updateStats(stats, insertTarget) {
 		const nodes = insertTarget.childNodes.length;
+		const chars = insertTarget.textContent.length;
 		let mins = 0;
 		let cpm = 0;
 
@@ -75,12 +76,13 @@
 			mins = (Date.now() - stats.dataset.startTime) / 1000 / 60;
 
 			if (mins > 0) {
-				cpm = insertTarget.textContent.length / mins;
+				cpm = chars / mins;
 			}
 		}
 
 		const data = { "🕓": formatMinutes(mins), "💬": cpm.toFixed(2) };
 
+		stats.title = `${chars}字`;
 		stats.innerHTML = Object.keys(data).reduce((accum, key) => {
 			return accum + `<dd>${key}</dd><dt>${data[key]}</dt>`;
 		}, "");
