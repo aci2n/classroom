@@ -151,16 +151,17 @@
 	}
 
 	function initManualInsert(textarea, insertTarget) {
+		const delimiter = /\n/g;
+
 		textarea.addEventListener("input", () => {
 			const value = textarea.value;
-			const last = value.length - 1;
 
-			if (value[last] === "\n") {
+			if (delimiter.test(value)) {
 				textarea.value = "";
 
 				if (value.length > 1)  {
 					const node = document.createElement("p");
-					node.textContent = value.substring(0, last);
+					node.textContent = value.replace(delimiter, "");
 					insertTarget.appendChild(node);
 				}
 			}
