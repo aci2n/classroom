@@ -45,49 +45,6 @@
 		return text;
 	}
 
-	function pad(value) {
-		value = value.toString();
-
-		if (value.length === 1) {
-			value = "0" + value;
-		}
-
-		return value;
-	}
-
-	function formatMinutes(value) {
-		const mins = Math.floor(value);
-		const secs = Math.floor((value - mins) * 60);
-
-		return `${pad(mins)}:${pad(secs)}`;
-	}
-
-	function updateStats(stats, insertTarget) {
-		const nodes = insertTarget.childNodes.length;
-		const chars = insertTarget.textContent.length;
-		let mins = 0;
-		let cpm = 0;
-
-		if (nodes > 0) {
-			if (nodes === 1) {
-				stats.dataset.startTime = Date.now();
-			}
-
-			mins = (Date.now() - stats.dataset.startTime) / 1000 / 60;
-
-			if (mins > 0) {
-				cpm = chars / mins;
-			}
-		}
-
-		const data = { "🕓": formatMinutes(mins), "💬": cpm.toFixed(2) };
-
-		stats.title = `${chars}字`;
-		stats.innerHTML = Object.keys(data).reduce((accum, key) => {
-			return accum + `<dd>${key}</dd><dt>${data[key]}</dt>`;
-		}, "");
-	}
-
 	function onMutation(records, kanjiInfo, insertTarget, stats, defaultSource) {
 		const target = records[0].target;
 
@@ -96,7 +53,6 @@
 			node.innerHTML = addRtkLinks(cleanText(node.textContent), defaultSource) + "\n";
 			customizeLinks(node.querySelectorAll("a"), kanjiInfo);
 		}));
-		updateStats(stats, insertTarget);
 		target.scrollTop = target.scrollTopMax;
 	}
 
@@ -178,7 +134,6 @@
 		initKeybinds(dom.background, config.backgroundCount, config.backgroundTemplate);
 		initTitle(dom.title, config.title);
 		initManualInsert(dom.manualInsert, dom.insertTarget);
-		updateStats(dom.stats, dom.insertTarget);
 	}
 
 	window.classroom = initClassroom;

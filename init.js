@@ -8,8 +8,7 @@
 			insertTarget: "#insert-target",
 			clear: "#clear",
 			title: "#title",
-			manualInsert: "#manual-insert",
-			stats: "#stats"
+			manualInsert: "#manual-insert"
 		};
             
 		return Object.keys(selectors).reduce((map, key) => {

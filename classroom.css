@@ -34,28 +34,6 @@ h1 {
     font-weight: normal;
 }
 
-#stats {
-	margin: 0;
-	padding: 3px;
-	margin: 0px -3px;
-	position: absolute;
-	left: 0;
-}
-
-#stats:not(:hover) {
-	opacity: 0;
-}
-
-#stats dd {
-	font-weight: bold;
-}
-
-#stats dd,
-#stats dt {
-	display: inline;
-	margin: 0px 1.5px;
-}
-
 #insert-target {
 	overflow: auto;
 	resize: vertical;
@@ -107,25 +85,4 @@ h1 {
 #manual-insert {
 	resize: none;
 	height: 1.5em;
-}
-
-#timer {
-	position: absolute;
-	right: 0;
-	cursor: default;
-	opacity: 0.5;
-	padding: 5px;
-}
-
-#timer iframe {
-	display: none;
-}
-
-#timer:hover iframe {
-	display: block;
-	position: absolute;
-	top: 50%;
-	right: 50%;
-	width: 500px;
-	height: 400px;
 }
