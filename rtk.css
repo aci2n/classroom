@@ -1,0 +1,29 @@
+html, .main {
+    background: #2c3e50;
+}
+
+.main {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    color: #ecf0f1;
+}
+
+#foot {
+    display: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #2ecc71;
+}
+
+
+a {
+    color: #e67e22;
+}
+
+.left-arrow, .right-arrow {
+    display: none;
+}

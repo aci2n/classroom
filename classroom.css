@@ -85,4 +85,6 @@ h1 {
 #manual-insert {
 	resize: none;
 	height: 1.5em;
+	background-color: #bdc3c7;
+	border: none;
 }
