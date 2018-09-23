@@ -106,6 +106,7 @@
 
 	function initTitle(element, text) {
 		element.textContent = text;
+        document.title = text;
 	}
 
 	function initManualInsert(textarea, insertTarget) {
