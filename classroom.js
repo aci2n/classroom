@@ -18,11 +18,18 @@
 
 	function maybeUseFallbackSource(kanjiInfo, defaultSource, fallbackSource) {
 		const src = kanjiInfo.src;
+		const fallback = () => kanjiInfo.src = src.replace(defaultSource, fallbackSource);
 
 		if (src.startsWith(defaultSource)) {
 			fetch(src).then(response => {
 				if (response.status !== 200) {
-					kanjiInfo.src = src.replace(defaultSource, fallbackSource);
+					fallback();
+				} else if (src !== defaultSource) {
+					response.text().then(text => {
+						if (text.indexOf("Koohii stories:") === -1) {
+							fallback();
+						}
+					});
 				}
 			});
 		}
